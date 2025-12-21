@@ -69,11 +69,15 @@ async def mount(coordinator: ModuleCoordinator, config: dict | None = None):
     for tool in tools:
         await coordinator.mount("tools", tool, name=tool.name)
         logger.debug(f"Mounted memory tool: {tool.name}")
-    
+
+    # Expose the memory store via capabilities so hooks can access it
+    coordinator.set_capability("memory.store", store)
+    logger.debug("Exposed memory store via capabilities")
+
     logger.info(f"Memory module mounted with {len(tools)} tools (storage: {store.db_path})")
-    
+
     # Return cleanup function
     async def cleanup():
         logger.info("Memory module cleanup complete")
-    
+
     return cleanup
