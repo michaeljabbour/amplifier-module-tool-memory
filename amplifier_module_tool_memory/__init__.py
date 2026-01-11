@@ -71,9 +71,9 @@ async def mount(coordinator: ModuleCoordinator, config: dict | None = None):
         logger.debug(f"Mounted memory tool: {tool.name}")
 
     # Expose the memory store via capabilities so hooks can access it
-    # Guard against TestCoordinator which doesn't have set_capability
-    if hasattr(coordinator, 'set_capability'):
-        coordinator.set_capability("memory.store", store)
+    # Guard against TestCoordinator which doesn't have register_capability
+    if hasattr(coordinator, 'register_capability'):
+        coordinator.register_capability("memory.store", store)
         logger.debug("Exposed memory store via capabilities")
     else:
         logger.debug("Coordinator doesn't support capabilities (likely validation mode)")
