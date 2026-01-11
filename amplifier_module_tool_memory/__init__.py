@@ -71,13 +71,18 @@ async def mount(coordinator: ModuleCoordinator, config: dict | None = None):
         logger.debug(f"Mounted memory tool: {tool.name}")
 
     # Expose the memory store via capabilities so hooks can access it
-    coordinator.set_capability("memory.store", store)
-    logger.debug("Exposed memory store via capabilities")
+    # Guard against TestCoordinator which doesn't have set_capability
+    if hasattr(coordinator, 'set_capability'):
+        coordinator.set_capability("memory.store", store)
+        logger.debug("Exposed memory store via capabilities")
+    else:
+        logger.debug("Coordinator doesn't support capabilities (likely validation mode)")
 
     logger.info(f"Memory module mounted with {len(tools)} tools (storage: {store.db_path})")
 
     # Return cleanup function
     async def cleanup():
+        store.close()
         logger.info("Memory module cleanup complete")
 
     return cleanup
