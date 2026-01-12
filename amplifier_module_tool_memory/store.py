@@ -1372,3 +1372,12 @@ class MemoryStore:
             """)
             conn.commit()
             logger.info(f"Removed {to_remove} old memories to stay under limit")
+
+    def close(self):
+        """
+        Close the memory store.
+        
+        This is a no-op since connections are ephemeral (each operation uses
+        a context manager). Provided for API completeness and cleanup protocols.
+        """
+        logger.debug("MemoryStore.close() called (no-op - connections are ephemeral)")
